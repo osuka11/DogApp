@@ -13,6 +13,6 @@ import com.squareup.moshi.Json
  */
 class AuthApiResponse(
     val message:String,
-    @field:Json(name = "is_sucess")val isSucces: Boolean,
-    val data: UserResponse
+    @field:Json(name = "is_success")val isSucces: Boolean,
+    val data: UserResponse,
 )

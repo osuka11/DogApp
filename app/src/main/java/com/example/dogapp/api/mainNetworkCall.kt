@@ -37,7 +37,9 @@ suspend fun <T> makeNetworkCall(
                 "user_already_exist" -> R.string.user_already_exists
                 else -> R.string.unknown_error
             }
+
             Log.e("Error Message",errorMessage.toString())
+
             ApiResponseStatus.Error(errorMessage)
         }
 
