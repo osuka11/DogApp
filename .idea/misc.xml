@@ -3,9 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/desar/AndroidStudioProjects/DogApp/app/src/main/res/drawable/detail_info_background.xml" value="0.1235" />
+        <entry key="..\:/Users/desar/AndroidStudioProjects/DogApp/app/src/main/res/layout/activity_dog_detail.xml" value="0.17074275362318841" />
         <entry key="..\:/Users/desar/AndroidStudioProjects/DogApp/app/src/main/res/layout/activity_dog_list.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/desar/AndroidStudioProjects/DogApp/app/src/main/res/layout/activity_login.xml" value="0.17074275362318841" />
         <entry key="..\:/Users/desar/AndroidStudioProjects/DogApp/app/src/main/res/layout/activity_main.xml" value="0.17074275362318841" />
         <entry key="..\:/Users/desar/AndroidStudioProjects/DogApp/app/src/main/res/layout/dog_list_item.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/desar/AndroidStudioProjects/DogApp/app/src/main/res/layout/fragment_login.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/desar/AndroidStudioProjects/DogApp/app/src/main/res/layout/fragment_sign_up.xml" value="0.17074275362318841" />
       </map>
     </option>
   </component>

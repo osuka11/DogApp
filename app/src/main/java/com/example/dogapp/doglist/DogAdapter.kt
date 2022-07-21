@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.dogapp.Dog
-import com.example.dogapp.databinding.ActivityDogListBinding
+import coil.load
+import com.example.dogapp.model.Dog
 import com.example.dogapp.databinding.DogListItemBinding
 
 class DogAdapter:ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
@@ -20,6 +20,10 @@ class DogAdapter:ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
             return oldItem == newItem
         }
     }
+    private var onItemClickListener:((Dog) -> Unit)? = null
+    fun setOnItemClickListener(onItemClickListener: ((Dog) -> Unit)){
+        this.onItemClickListener = onItemClickListener
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogViewHolder {
         val binding = DogListItemBinding.inflate(LayoutInflater.from(parent.context))
         return DogViewHolder(binding)
@@ -32,7 +36,10 @@ class DogAdapter:ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
     inner class DogViewHolder(private val binding: DogListItemBinding):RecyclerView.ViewHolder(binding.root){
 
         fun bind(dog: Dog){
-            binding.dogName.text = dog.name
+            binding.dogListItemLayout.setOnClickListener {
+                onItemClickListener?.invoke(dog)
+            }
+            binding.dogImage.load(dog.imageUrl)
         }
     }
 }
