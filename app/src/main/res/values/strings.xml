@@ -28,4 +28,7 @@
     <string name="unknown_error">unknown error</string>
     <string name="there_was_an_error">There was an error</string>
     <string name="unknow_host_exception_error">UnknownHostException</string>
+    <string name="wrong_user_or_password">Wrong User or Password</string>
+    <string name="generic_description">This is a Contente Description</string>
+    <string name="logout">LogOut</string>
 </resources>
