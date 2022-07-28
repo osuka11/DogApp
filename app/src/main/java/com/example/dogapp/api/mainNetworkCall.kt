@@ -2,9 +2,11 @@ package com.example.dogapp.api
 
 import android.util.Log
 import com.example.dogapp.R
+import com.example.dogapp.UNAUTHORIZED_ERROR_CODE
 import com.example.dogapp.api.dto.DogDTOMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.net.UnknownHostException
 /*
 No hay que complicarnos mucho aqui, simplemente esa suspend fun(que funcion de manera interna) recibe un lambda
@@ -28,7 +30,12 @@ suspend fun <T> makeNetworkCall(
             ApiResponseStatus.Success(call())
         } catch (ex: UnknownHostException) {
             ApiResponseStatus.Error(R.string.unknow_host_exception_error)
-        }catch (e: Exception){
+
+            //Esta excepcion es para catchear una excepcion HTTP 400X por parte del cliente
+        }catch (ex: HttpException){
+            val errorMessage = if(ex.code() == UNAUTHORIZED_ERROR_CODE ) R.string.wrong_user_or_password else  R.string.unknown_error
+            ApiResponseStatus.Error(errorMessage)
+        } catch (e: Exception){
             //Esta exception la cacheamos en caso de que el la llamada para el signUp regrese cualquiera de estos mensajes
 
             val errorMessage = when(e.message){
