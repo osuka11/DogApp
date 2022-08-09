@@ -18,7 +18,7 @@ class AuthRepository {
             val signUpDTO = SignUpDTO(email,password,passwordConfirmation)  //Aqui creamos nuestro objeto signUpDTO que es el que va a recibir el servidor
             val signUpResponse = DogsApi.retofitService.signUp(signUpDTO)   //Aqui recibimos la respuesta del servidor que viene en forma en SignUpResponse
 
-            Log.d("Call Success SignUp",signUpResponse.message)
+            //Log.d("Call Success SignUp",signUpResponse.message)
 
             if(!signUpResponse.isSucces){       //Dependiendo lo que responda el servidor el objeto SignUpResponse, si su su atributo isSuccess retorna false
                                                 //Entonces mandamos al atributo de message el SignUpDTO la excepción

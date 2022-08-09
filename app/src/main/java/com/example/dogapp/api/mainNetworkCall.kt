@@ -29,11 +29,12 @@ suspend fun <T> makeNetworkCall(
 
             ApiResponseStatus.Success(call())
         } catch (ex: UnknownHostException) {
+            Log.d("UnknownHost",ex.message!!)
             ApiResponseStatus.Error(R.string.unknow_host_exception_error)
 
             //Esta excepcion es para catchear una excepcion HTTP 400X por parte del cliente
         }catch (ex: HttpException){
-            val errorMessage = if(ex.code() == UNAUTHORIZED_ERROR_CODE ) R.string.wrong_user_or_password else  R.string.unknown_error
+            val errorMessage = if(ex.code() == UNAUTHORIZED_ERROR_CODE   ) R.string.wrong_user_or_password else  R.string.unknown_error
             ApiResponseStatus.Error(errorMessage)
         } catch (e: Exception){
             //Esta exception la cacheamos en caso de que el la llamada para el signUp regrese cualquiera de estos mensajes
