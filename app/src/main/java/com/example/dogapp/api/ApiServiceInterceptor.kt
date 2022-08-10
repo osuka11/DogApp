@@ -11,6 +11,8 @@ Lo que hace este intercept es que todos los request que mandemos a web van a pas
 toma el request que nosotros estamos enviando, verifica si tiene un header(NEEDS_AUTH_HEADER_KEY), si no lo tiene(!=) significa que no necesitamos
 autenticacion, y el request continua como si nada, si si tiene el header (==) significa que necesitamos autenticacion entonces va a checer si existe un session token
 si no existe va a mandar una excepcion, si si existe lo va a agregar en el builder con la sintaxis que necesita el servidor("AUTH-TOKEN",sessionToken) y finalmente
+
+ En el sessionToken se almacenara el authToken con el que se podrá identificar cada usuario
  */
 object ApiServiceInterceptor:Interceptor {
 
@@ -18,7 +20,7 @@ object ApiServiceInterceptor:Interceptor {
     private var sessionToken: String? = null
     //Creamos un setter para el sessionToken
     fun setSessionToken(authenticationToken: String) {
-        this.sessionToken = sessionToken
+        this.sessionToken = authenticationToken
     }
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()

@@ -1,9 +1,6 @@
 package com.example.dogapp.api
 
-import com.example.dogapp.ADD_DOG_TO_USER
-import com.example.dogapp.BASE_URL
-import com.example.dogapp.SIGN_IN_URL
-import com.example.dogapp.SIGN_UP_URL
+import com.example.dogapp.*
 import com.example.dogapp.api.dto.LoginDTO
 import com.example.dogapp.api.dto.SignUpDTO
 import com.example.dogapp.api.dto.AddDogToUserDTO
@@ -23,7 +20,7 @@ private val okHttpClient = OkHttpClient
     .addInterceptor(ApiServiceInterceptor)
     .build()
 /*
-Le agregamos el okHttpClient como el cliente que administrará los request 
+Le agregamos el okHttpClient como el cliente que administrará los request
  */
 private val retrofi = Retrofit.Builder()
     .client(okHttpClient)
@@ -53,12 +50,17 @@ interface ApiService {
     puede ser enlazado con el token del usario para que solamente el puede agregar perros a su colección, sin embargo
     necesitaremos el header que contendrá un valor para determinar si el request necesita o no que el usuario este logueado
     Ese valor es el token_authentication, como obtenemos ese dato? gracias a los interceptors.
-
      */
-
     @Headers("${ApiServiceInterceptor.NEEDS_AUTH_HEADER_KEY}:true")
     @POST(ADD_DOG_TO_USER)
     suspend fun addDogToUser(@Body addDogToUserDTO: AddDogToUserDTO):DefaultResponse
+
+/*
+Llamada para devolver la coleccion de perros de un usuario y mostrarla
+ */
+    @Headers("${ApiServiceInterceptor.NEEDS_AUTH_HEADER_KEY}:true")
+    @GET(GET_USER_DOGS_URL)
+    suspend fun getUserDogs():DogListApiResponse
 
 }
 

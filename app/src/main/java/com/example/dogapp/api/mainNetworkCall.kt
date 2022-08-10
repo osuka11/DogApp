@@ -44,10 +44,11 @@ suspend fun <T> makeNetworkCall(
                "sign_in_error" ->  R.string.error_sign_in
                 "user_already_exist" -> R.string.user_already_exists
                 "error_adding_dog" -> R.string.error_adding_dog
+                "Dog added to user!" -> R.string.succesfull_add_dog
                 else -> R.string.unknown_error
             }
 
-            Log.e("Error Message",errorMessage.toString())
+            Log.e("Error Message",e.message!!)
 
             ApiResponseStatus.Error(errorMessage)
         }

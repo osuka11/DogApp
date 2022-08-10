@@ -1,11 +1,14 @@
 package com.example.dogapp.doglist
 
+import com.example.dogapp.R
 import com.example.dogapp.model.Dog
 import com.example.dogapp.api.ApiResponseStatus
 import com.example.dogapp.api.DogsApi.retofitService
 import com.example.dogapp.api.dto.AddDogToUserDTO
 import com.example.dogapp.api.dto.DogDTOMapper
 import com.example.dogapp.api.makeNetworkCall
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 class DogRepository {
@@ -21,7 +24,7 @@ Lo que hicimos despues, es crear un file con una suspend File, donde vamos a hac
 los request, este metodo le mandaremos un fragmento de código que va a ser evaluado en un try-catch y dependendiendo
 la respuesta, va a retornar un success<T> o un error
  */
-    suspend fun downloadDogs(): ApiResponseStatus<List<Dog>> {
+    private suspend fun downloadDogs(): ApiResponseStatus<List<Dog>> {
         return makeNetworkCall {
             val dogListApiResponse = retofitService.getAllDogs()
             val dogDTOList = dogListApiResponse.data.dogs
@@ -106,9 +109,11 @@ DogListResponse y que este a su vez contiene una propieda Dog de tipo List<Dog>
     }
 
     /*
+    Este método es que llamara el servicio de addDogToUser, para agregar un nuevo perro a la coleccion del usuario
 
      */
-    suspend fun addDogToUser(dogId: String):ApiResponseStatus<Any> = makeNetworkCall {
+
+    suspend fun addDogToUser(dogId: Long):ApiResponseStatus<Any> = makeNetworkCall {
             val addDogToUserDTO = AddDogToUserDTO(dogId)
             val defaultResponse = retofitService.addDogToUser(addDogToUserDTO)
 
@@ -116,7 +121,54 @@ DogListResponse y que este a su vez contiene una propieda Dog de tipo List<Dog>
                 throw Exception(defaultResponse.message)
             }
         }
+    private suspend fun getUserDogs():ApiResponseStatus<List<Dog>> = makeNetworkCall {
+        val dogListApiResponse = retofitService.getUserDogs()
+        val dogDT0List = dogListApiResponse.data.dogs
+        val dogDTOMapper = DogDTOMapper()
+        dogDTOMapper.fromDogDTOListToDogDomainInList(dogDT0List)
 
+    }
+
+    suspend fun getDogCollection():ApiResponseStatus<List<Dog>>{
+        return withContext(Dispatchers.IO) {
+            val allDogsListResponse = downloadDogs()
+            val userDogsListResponse = getUserDogs()
+
+            if(allDogsListResponse is ApiResponseStatus.Error){
+            allDogsListResponse
+            }else if(userDogsListResponse is ApiResponseStatus.Error){
+            userDogsListResponse
+            }else if(allDogsListResponse is ApiResponseStatus.Success &&
+                userDogsListResponse is ApiResponseStatus.Success ){
+                ApiResponseStatus.Success(
+                    getCollectionList(allDogsListResponse.data,
+                        userDogsListResponse.data))
+            }else{
+                ApiResponseStatus.Error(R.string.unknown_error)
+            }
+
+        }
+    }
+
+    private fun getCollectionList(allDogsList: List<Dog>, userDogList: List<Dog>):List<Dog>{
+
+
+        //Transforma los elementos de una lista formar una lista nueva
+        //Tomamos la lista de todos los perros y la comparamos con la lista de la coleccion de perros del usuario
+        return allDogsList.map{
+            //Si un elemento de coleccion del usuario es igual a la lista de todos los perros, entonces lo deja tal como es
+            //Si no, devuelvo un perro vacio con su index
+            if(userDogList.contains(it)){
+                it
+            }else{
+                Dog(0,it.index,"","","","","",
+                "","","","")
+            }
+        }.sortedBy {
+            it.index
+        }
+        //Metodo sortedBy se activa cuando se agrega la interfaz Comparable en el modelo Dog
+    }
 
 
 }

@@ -31,6 +31,11 @@ class DogListActivity : AppCompatActivity() {
             intent.putExtra(DOG_KEY, it)
             startActivity(intent)
         }
+
+        adapter.setOnLongClickListener {
+            dogListViewModel.addDogToUser(it.id)
+        }
+
         dogListViewModel.dogList.observe(this, Observer {
             adapter.submitList(it)
         })
