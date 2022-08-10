@@ -16,7 +16,8 @@ data class Dog(
     val lifeExpectancy: String,
     val temperament: String,
     val weightFemale: String,
-    val weighMale: String
+    val weighMale: String,
+    var inCollection: Boolean = true
     ) : Parcelable, Comparable<Dog> {
 
     //Metodo CompareTo

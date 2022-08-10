@@ -8,6 +8,7 @@ import com.example.dogapp.api.dto.AddDogToUserDTO
 import com.example.dogapp.api.dto.DogDTOMapper
 import com.example.dogapp.api.makeNetworkCall
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 
@@ -131,8 +132,16 @@ DogListResponse y que este a su vez contiene una propieda Dog de tipo List<Dog>
 
     suspend fun getDogCollection():ApiResponseStatus<List<Dog>>{
         return withContext(Dispatchers.IO) {
-            val allDogsListResponse = downloadDogs()
-            val userDogsListResponse = getUserDogs()
+            /*
+            Deferred Courroutines
+            Los procesos de downloadsDogs y getUserDogs se ejecutarán al mismo tiempo.
+
+             */
+            val allDogsListResponseDeferred =  async { downloadDogs()  }
+            val userDogsListResponseDeferred = async { getUserDogs() }
+
+            val allDogsListResponse = allDogsListResponseDeferred.await()
+            val userDogsListResponse = userDogsListResponseDeferred.await()
 
             if(allDogsListResponse is ApiResponseStatus.Error){
             allDogsListResponse
@@ -162,7 +171,7 @@ DogListResponse y que este a su vez contiene una propieda Dog de tipo List<Dog>
                 it
             }else{
                 Dog(0,it.index,"","","","","",
-                "","","","")
+                "","","","",inCollection = false)
             }
         }.sortedBy {
             it.index
