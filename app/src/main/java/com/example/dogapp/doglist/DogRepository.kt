@@ -3,6 +3,7 @@ package com.example.dogapp.doglist
 import com.example.dogapp.model.Dog
 import com.example.dogapp.api.ApiResponseStatus
 import com.example.dogapp.api.DogsApi.retofitService
+import com.example.dogapp.api.dto.AddDogToUserDTO
 import com.example.dogapp.api.dto.DogDTOMapper
 import com.example.dogapp.api.makeNetworkCall
 
@@ -103,4 +104,20 @@ DogListResponse y que este a su vez contiene una propieda Dog de tipo List<Dog>
  */
 
     }
+
+    /*
+
+     */
+    suspend fun addDogToUser(dogId: String):ApiResponseStatus<Any> = makeNetworkCall {
+            val addDogToUserDTO = AddDogToUserDTO(dogId)
+            val defaultResponse = retofitService.addDogToUser(addDogToUserDTO)
+
+            if(!defaultResponse.isSucces){
+                throw Exception(defaultResponse.message)
+            }
+        }
+
+
+
 }
+

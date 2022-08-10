@@ -1,19 +1,32 @@
 package com.example.dogapp.api
 
+import com.example.dogapp.ADD_DOG_TO_USER
 import com.example.dogapp.BASE_URL
 import com.example.dogapp.SIGN_IN_URL
 import com.example.dogapp.SIGN_UP_URL
 import com.example.dogapp.api.dto.LoginDTO
 import com.example.dogapp.api.dto.SignUpDTO
+import com.example.dogapp.api.dto.AddDogToUserDTO
 import com.example.dogapp.api.responses.DogListApiResponse
 import com.example.dogapp.api.responses.AuthApiResponse
+import com.example.dogapp.api.responses.DefaultResponse
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-
+import retrofit2.http.*
+/*
+Para que la libreria OkHttpClient pueda implementarse en nuestro request, creamos un variable de tipo OkHttpClient
+que lo importante es que contendrá el singleton con el interceptor
+ */
+private val okHttpClient = OkHttpClient
+    .Builder()
+    .addInterceptor(ApiServiceInterceptor)
+    .build()
+/*
+Le agregamos el okHttpClient como el cliente que administrará los request 
+ */
 private val retrofi = Retrofit.Builder()
+    .client(okHttpClient)
     .baseUrl(BASE_URL)
     .addConverterFactory(MoshiConverterFactory.create())    //Se agrega Moshi para parsear en objetos
     .build()
@@ -34,7 +47,22 @@ interface ApiService {
     @POST(SIGN_IN_URL)
     suspend fun login(@Body loginDTO: LoginDTO ):AuthApiResponse
 
+
+    /*
+    Esta llamada inserta un perro en la colección de un usuario, el body del POST esta hecha para que el request
+    puede ser enlazado con el token del usario para que solamente el puede agregar perros a su colección, sin embargo
+    necesitaremos el header que contendrá un valor para determinar si el request necesita o no que el usuario este logueado
+    Ese valor es el token_authentication, como obtenemos ese dato? gracias a los interceptors.
+
+     */
+
+    @Headers("${ApiServiceInterceptor.NEEDS_AUTH_HEADER_KEY}:true")
+    @POST(ADD_DOG_TO_USER)
+    suspend fun addDogToUser(@Body addDogToUserDTO: AddDogToUserDTO):DefaultResponse
+
 }
+
+
 
 object DogsApi{
     /*Propieda Lazy en kotlin será materializado solo cuando sea necesitado, posponiendo

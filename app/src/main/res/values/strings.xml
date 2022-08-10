@@ -31,4 +31,5 @@
     <string name="wrong_user_or_password">Wrong User or Password</string>
     <string name="generic_description">This is a Contente Description</string>
     <string name="logout">LogOut</string>
+    <string name="error_adding_dog">error_adding_dog</string>
 </resources>

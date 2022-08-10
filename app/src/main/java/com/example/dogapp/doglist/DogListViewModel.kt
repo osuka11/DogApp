@@ -16,8 +16,8 @@ class DogListViewModel:ViewModel() {
     private val _dogList = MutableLiveData<List<Dog>>()
     val dogList:LiveData<List<Dog>>
         get() = _dogList
-    private val _status = MutableLiveData<ApiResponseStatus<List<Dog>>>()
-    val status:LiveData<ApiResponseStatus<List<Dog>>>
+    private val _status = MutableLiveData<ApiResponseStatus<Any>>()
+    val status:LiveData<ApiResponseStatus<Any>>
         get() = _status
 
 
@@ -37,13 +37,33 @@ class DogListViewModel:ViewModel() {
 
         }
     }
-
+@Suppress("UNCHECKED_CAST")
     private fun handleResponseStatus(apiResponse: ApiResponseStatus<List<Dog>>) {
         if(apiResponse is ApiResponseStatus.Success){
             _dogList.value = apiResponse.data   //Si retorna succes, entonces dentro lleva la list<Dog>
 
         }else{
-            _status.value = ApiResponseStatus.Error(R.string.there_was_an_error)//Catcheo hasta el error, entonces no retorna la lista y retorna un mensaje de error
+            _status.value = apiResponse as ApiResponseStatus<Any>//Catcheo hasta el error, entonces no retorna la lista y retorna un mensaje de error
+        }
+
+    }
+
+    private fun addDogToUser(dogId:String){
+        viewModelScope.launch {
+            _status.value = ApiResponseStatus.Loading()
+            handleAddDogToUserResponseStatus(repository.addDogToUser(dogId))
+        }
+    }
+
+    private fun handleAddDogToUserResponseStatus(apiResponse: ApiResponseStatus<Any>) {
+        if(apiResponse is ApiResponseStatus.Success){
+            downloadDogs()   //Si retorna succes, entonces dentro lleva la list<Dog>
+
+        }else{
+            //_status.value = ApiResponseStatus.Error(R.string.there_was_an_error)//Catcheo hasta el error, entonces no retorna la lista y retorna un mensaje de error
+
+            _status.value = apiResponse
+
         }
 
     }

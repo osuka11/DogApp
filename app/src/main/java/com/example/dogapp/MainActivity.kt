@@ -3,6 +3,7 @@ package com.example.dogapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.dogapp.api.ApiServiceInterceptor
 import com.example.dogapp.auth.LoginActivity
 import com.example.dogapp.databinding.ActivityMainBinding
 import com.example.dogapp.doglist.DogListActivity
@@ -21,6 +22,10 @@ class MainActivity : AppCompatActivity() {
             openLoginActivity()
             return
 
+        }else{
+            //Si hay un sesion iniciado, por medio del sharedPreferences le manda el el authTOKEN para que lo
+            //almacene en el sessionToken que necesita el interceptor
+            ApiServiceInterceptor.setSessionToken(user.authenticationToken)
         }
 
         binding.settingsFab.setOnClickListener {
